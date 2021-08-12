@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang="ko"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content=""><title>한권으로읽는컴퓨터구조와프로그래밍 | Choi's Dev</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create','UA-203671947-1','auto');ga('send','pageview');
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 5.4.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">한권으로읽는컴퓨터구조와프로그래밍</h1><a id="logo" href="/.">Choi's Dev</a><p class="description">Software Engineer, Backend-Developer</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 홈</i></a><a href="/archives/"><i class="fa fa-archive"> 아카이브</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">한권으로읽는컴퓨터구조와프로그래밍</h1><div class="post-meta">2021-06-20<span> | </span><span class="category"><a href="/categories/CS/">CS</a></span></div><div class="post-content"><h1 id="한권으로읽는컴퓨터구조와프로그래밍"><a href="#한권으로읽는컴퓨터구조와프로그래밍" class="headerlink" title="한권으로읽는컴퓨터구조와프로그래밍"></a>한권으로읽는컴퓨터구조와프로그래밍</h1><h2 id="UTF-8-P-81-83"><a href="#UTF-8-P-81-83" class="headerlink" title="UTF-8, P.81 ~ 83"></a>UTF-8, P.81 ~ 83</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://ko.wikipedia.org/wiki/%EC%9C%A0%EB%8B%88%EC%BD%94%EB%93%9C_0000~0FFF">유니코드</a>를 2진수로 인코딩하는 방식. <strong>쉽게 말해, 글자를 2진수로 매핑해둔 코드들 전체를 가리켜 유니코드라고 부르는 것이다.</strong></li>
+<li>UTF-8은 가변바이트 사용한다. 예를 들어, 1바이트로 표현이 충분한 A같은 경우는 0x41로 표현하며 한글의 경우 3바이트로 표현한다. 아스키코드 호환의 1바이트(8비트)부터 4바이트(32비트) 영역까지 <a target="_blank" rel="noopener" href="https://ko.wikipedia.org/wiki/%EC%9C%A0%EB%8B%88%EC%BD%94%EB%93%9C_0000~0FFF">유니코드</a>가 존재하며, 코드는 U+로 시작하며 이는 유니코드를 뜻하는 프리픽스이며 이후에 16진수로 표현된다.</li>
+<li>유니코드의 U+C546과 같은 코드 Index를 가리켜 <code>CodePoint</code> 혹은 <code>CodeUnit</code>라 부르기도 한다.</li>
+<li>한글로 예를 들면, 유니코드에서 U+C000 코드부터 시작하며 아래는 변환하는 예제이다.<table>
+<thead>
+<tr>
+<th>한글</th>
+<th>유니코드</th>
+<th>2진수</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>안</td>
+<td>U+C548</td>
+<td>(1110)1100 (10)010101 (10)001000</td>
+</tr>
+<tr>
+<td>오</td>
+<td>U+C624</td>
+<td>(1110)1100 (10)011000 (10)100100</td>
+</tr>
+<tr>
+<td>네</td>
+<td>U+B124</td>
+<td>(1110)1011 (10)000100 (10)100100</td>
+</tr>
+</tbody></table>
+</li>
+<li>바이트별로 비트 배열이 조금씩 달라지는데, 이건 다른 복잡한 이유가 있는 것이 아니라 <code>규칙</code>이다.<ul>
+<li>1바이트의 경우 MSB(Most Significant Bit)를 0으로 고정 =&gt; 7bit에 해당하는 부분이 <code>유효비트</code></li>
+<li>2바이트의 경우 첫 번째 MSB를 110, 2번째 MSB를 10으로 고정 =&gt; 11bit에 해당하는 부분이 코<code>유효비트</code></li>
+<li>3바이트의 경우 첫 번째 MSB를 1110, 나머지 MSB는 10으로 고정 =&gt; bit에 해당하는 부분이 <code>유효비트</code></li>
+<li>4바이트의 경우 첫 번째 MSB를 11110, 나머지 MSB는 10으로 고정 =&gt; bit에 해당하는 부분이 <code>유효비트</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="객체지향의-함정-P-311"><a href="#객체지향의-함정-P-311" class="headerlink" title="객체지향의 함정, P.311"></a>객체지향의 함정, P.311</h2><blockquote>
+<p>객체에는 함수에 해당하는 메서드와 데이터에 해당하는 프로퍼티가 들어 있다. 정수값 등 크기가 작은 데이터를 저장하는 프로퍼티는 객체 구조체 안에 들어가고 메모리 할당이 더 필요한 프로퍼티는 객체 구조체 안에 포인터를 통하여 참조된다. 메서드가 아주 많거나 하면 이 구조체가 아주 커질수 있는데, 이를 별도의 데이터 구조에 나눠 담으면 이런 문제는 해결할 수 있다. 시간/공간/트레이드 오프의 예라고 할 수 있다. </p>
+</blockquote>
+<blockquote>
+<p>객체는 전역적으로 알려진 함수 대신에 자신이 사용할 메서드에 대한 포인터를 가지고 다녀야 한다. 따라서 객체 내의 데이터가 데이터만 저장하는 데이터 구조처럼 꽉 짜여 있지 않다. 성능적으로 결정적으로 중요할 때는 전통적인 배열을 활용하라.</p>
+</blockquote>
+</div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2021/07/18/Java/NETTY_IN_ACTION/">Netty-In-Action</a><a class="next" href="/2021/06/09/Java/THREAD/">Thread 관련 링크 정리</a></div><script src="https://utteranc.es/client.js" repo="thefeeling/thefeeling.github.io" issue-term="title" theme="github-light" crossorigin="anonymous" async> </script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://thefeeling.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 카테고리</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ARCHITECTURE/">ARCHITECTURE</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/AWS/">AWS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS/">CS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DATABASE/">DATABASE</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DDD/">DDD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DIARY/">DIARY</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kotlin/">Kotlin</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MESSAGING/">MESSAGING</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Persistence/">Persistence</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 태그</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 과거</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/08/13/DIARY/20210813/">20210813</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/09/ARCHITECTURE/DATA_INTENSIVE_APPLICATION/">데이터 중심 어플리케이션 설계 - 7장 트랜잭션</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/08/DIARY/20210808/">20210808</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/05/DIARY/20210805/">20210805</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/01/DIARY/20210801/">20210801</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/30/DIARY/20210730/">20210730</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/28/DIARY/20210728/">20210728</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/DIARY/20210727/">20210727</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/Spring/MVC_RequestParam/">MVC와 WebFlux에서의 @ReqeustParam</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/Kotlin/Kotlin_In_Action/">Kotlin-In-Action Generics</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/." rel="nofollow">Choi's Dev.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" id="maid-script" mermaidoptioins="{&quot;startOnload&quot;:true}" src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js?v=1.0.0"></script><script>if (window.mermaid) {
+  var options = JSON.parse(document.getElementById('maid-script').getAttribute('mermaidoptioins'));
+  mermaid.initialize(options);
+}
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="Copy Successed!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>

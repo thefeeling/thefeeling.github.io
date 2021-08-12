@@ -1,0 +1,175 @@
+<!DOCTYPE html><html lang="ko"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content=""><title>Effective Java - 2장 | Choi's Dev</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create','UA-203671947-1','auto');ga('send','pageview');
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 5.4.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Effective Java - 2장</h1><a id="logo" href="/.">Choi's Dev</a><p class="description">Software Engineer, Backend-Developer</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 홈</i></a><a href="/archives/"><i class="fa fa-archive"> 아카이브</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Effective Java - 2장</h1><div class="post-meta">2019-02-18<span> | </span><span class="category"><a href="/categories/Java/">Java</a></span></div><div class="post-content"><h1 id="Effective-Java-2장"><a href="#Effective-Java-2장" class="headerlink" title="Effective Java - 2장"></a>Effective Java - 2장</h1><h1 id="2장-모든-객체의-공통-메서드"><a href="#2장-모든-객체의-공통-메서드" class="headerlink" title="[2장] 모든 객체의 공통 메서드"></a>[2장] 모든 객체의 공통 메서드</h1><ul>
+<li>Objects는 객체를 만들 수 있는 구체 클래스면서 기본적으로 상속하여 사용이 가능</li>
+<li>equals, hashCode, toString, clone, finalize 모두 재정의를 염두로 두고 설계</li>
+<li>일반 규약에 맞도록 재정의(overriding)해야 하며, 잘못 구현하면 오작동을 발생 시킬 수 있음</li>
+</ul>
+<h2 id="ITEM-10-equals는-일반-규약을-지켜-재정의하라"><a href="#ITEM-10-equals는-일반-규약을-지켜-재정의하라" class="headerlink" title="ITEM 10 - equals는 일반 규약을 지켜 재정의하라"></a>ITEM 10 - equals는 일반 규약을 지켜 재정의하라</h2><ul>
+<li><p>일반 규약에 맞도록 재정의 하지 않을꺼면 재정의를 안하는 것이 최선. </p>
+</li>
+<li><p>아래 항목이 해당하는 경우 재정의를 하는 것이 크게 의미가 없을 수 있음.</p>
+<ul>
+<li>각 인스턴스는 본질적으로 고유</li>
+<li>인스턴스의 <code>논리적 동치성</code>을 검사할 일이 없는 경우</li>
+<li>상위 클래스에서 정의한 <code>equals</code>가 하위 클래스에 딱 들어맞는 경우</li>
+<li>클래스가 <code>private</code>이거나 <code>package-private</code>일 경우, equals를 호출할 일이 없음</li>
+</ul>
+</li>
+<li><p>그럼 언제 재정의 해야 할까?</p>
+<ul>
+<li>객체 간 <code>논리적 동치성</code>을 확인해야 하는데 상위 클래스의 <code>equals</code>가 이를 비교하도록 정의되지 않았을 경우에 재정의 해야 함.</li>
+<li>주로 값 클래스일 경우가 해당 함.</li>
+</ul>
+</li>
+<li><p><code>equals</code>의 일반 규약은 아래와 같다.</p>
+<ul>
+<li>반사성: 자기 자신과 같아야 함.</li>
+<li>대칭성: x가 y와 같다면, y도 x와 같아야 한다.</li>
+<li>추이성: x가 y와 같고, y가 z와 같다면, x는 z와 같아야 한다.</li>
+<li>일관성: x와 y가 같다면, 영원히 같아야 함.</li>
+<li>null-아님: null과 비교하는 것은 의미가 없음.</li>
+</ul>
+</li>
+<li><p>구체 클래스를 확장해 새로운 값을 추가하면서 equals 규약을 만족 시킬 방법은 존재하지 않음.</p>
+<ul>
+<li>Point 클래스를 상속한 ColorPoint클래스와 Point클래스의 인스턴스를 비교할 수 없음, Why?</li>
+<li>객체의 동등성 비교 시, 한쪽만 true인 결과를 얻을 수 있기 때문. equals의 대칭성 규약을 지킬 수 없다.</li>
+</ul>
+</li>
+<li><p>상속이 아닌 컴포지션을 사용하면 우회하여 값을 비교하는 equals를 재정의 하는 것이 가능하다.</p>
+</li>
+<li><p><code>equals</code> 메서드를 구현하는 일반적인 방법은 아래와 같다.</p>
+<ol>
+<li><code>==</code> 연산자를 사용하여 자기 자신의 참조 확인</li>
+<li>instanceof 연산자로 올바른 타입인지 체크</li>
+<li>2번 단계에서 확인한 타입으로 타입 캐스팅</li>
+<li>입력 객체와 자기 자신의 대응되는 핵심 필드들이 모두 일치하는지 검사</li>
+</ol>
+</li>
+<li><p>값 혹은 참조를 비교하는 방법은?</p>
+<ul>
+<li>float, double을 제외한 기본 타입의 필드는 <code>==</code> 연산자로 비교<ul>
+<li>float, double은 <code>Float.compare(float, float)</code>, <code>Double.compare(double, double)</code>로 비교</li>
+<li>Float.equals 및 Double.equals는 오토박싱을 수반하므로 성능상 좋지 않음</li>
+</ul>
+</li>
+<li>참조 타입 필드는 해당 타입의 <code>equals</code>를 이용하여 비교</li>
+<li>배열 전체를 비교 할 경우, <code>Arrays.equals</code>를 사용</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">PhoneNumber</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">short</span> areaCode, prefix, lineNum;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PhoneNumber</span><span class="params">(<span class="keyword">short</span> areaCode, <span class="keyword">short</span> prefix, <span class="keyword">short</span> lineNum)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.areaCode = areaCode;</span><br><span class="line">        <span class="keyword">this</span>.prefix = prefix;</span><br><span class="line">        <span class="keyword">this</span>.lineNum = lineNum;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">short</span> <span class="title">rangeCheck</span><span class="params">(<span class="keyword">int</span> val, <span class="keyword">int</span> max, String arg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (val &lt; <span class="number">0</span> || val &gt; max) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(arg + <span class="string">&quot;: &quot;</span> + val);</span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">short</span>) val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">// 인자의 타입은 `Object` 타입을 사용하도록 하자</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 1. 자기 자신과 같은지 확인</span></span><br><span class="line">        <span class="keyword">if</span> (o == <span class="keyword">this</span>) <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        <span class="comment">// 2. 타입이 같은 체크</span></span><br><span class="line">        <span class="keyword">if</span> (!(o <span class="keyword">instanceof</span> PhoneNumber)) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        <span class="comment">// 3. 타입 캐스팅</span></span><br><span class="line">        PhoneNumber pn = (PhoneNumber)o;</span><br><span class="line">        <span class="comment">// 4. 주요 필드 값에 대해 비교 연산 수행</span></span><br><span class="line">        <span class="keyword">return</span> pn.lineNum == lineNum &amp;&amp; pn.areaCode == areaCode &amp;&amp; pn.prefix == prefix;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>equals</code>를 구현하고 체크해야 할 세가지<ul>
+<li>대칭적인지?, 추이성을 만족하는지?, 일관적인지?</li>
+<li>equals를 재정의할 경우 반드시 hashCode도 재정의하자</li>
+<li>인자의 타입은 <code>Object</code> 타입을 사용하도록 하자. 만약 구체 타입으로 인자를 받을 경우 아래 그림과 컴파일이 되지 않는다. <code>@Override</code> 어노테이션을 일관되게 사용하면 이런 일련의 실수를 예방할 수 있다.<br><img src="https://i.imgur.com/MVYfZTY.png" alt="인자의 타입은 `Object`"></li>
+</ul>
+</li>
+</ul>
+<h2 id="ITEM-11-equals를-재정의하려거든-hashCode도-재정의하라"><a href="#ITEM-11-equals를-재정의하려거든-hashCode도-재정의하라" class="headerlink" title="ITEM 11 - equals를 재정의하려거든 hashCode도 재정의하라"></a>ITEM 11 - equals를 재정의하려거든 hashCode도 재정의하라</h2><ul>
+<li><p>equals를 재정의 할 경우 반드시 hashCode도 재정의 해야 한다. </p>
+<ul>
+<li>그러지 않으면, HashSet 혹은 HashMap과 같은 콜랙션 구현체에서 사용 시 문제가 발생한다.</li>
+</ul>
+</li>
+<li><p>아래는 Object 명세의 일부이다.</p>
+<ul>
+<li>equals 비교에 사용되는 필드 값이 변경되지 않았다면, 매번 같은 hashCode를 반환해야 한다.</li>
+<li><strong>[중요] equals에서 두 객체가 같다고 판단했다면, hashCode도 같은 값을 반환해야 한다.</strong></li>
+<li>equals에서 두 객체가 다르다고 판단했더라도, 두 객체가 다른 hashCode값을 반환할 필요는 없다. </li>
+<li><strong>[중요] 하지만, 다른 객체에 대해서는 다른 hashCode 값을 반환해야 해시테이블의 성능이 좋아진다.</strong></li>
+</ul>
+</li>
+<li><p>해시코드 반환을 올바르게 하지 않을 경우, 수행 시간의 계산이 최대 O(n)까지 늘어날 수 있다.아래는 O(n)까지 늘어나는 사용 금지 해시 코드 구현이다.</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="number">42</span>; &#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>좋은 해시 함수는 결국 서로 다른 객체 혹은 인스턴스에 대해 다른 해시코드를 반환해야 한다. 이상적인 해시 함수는 인스턴스들을 32비트 정수 범위에 균일하게 분배해야 한다.</p>
+</li>
+<li><p><code>hashCode</code>를 작성하는 요령은?</p>
+<ol>
+<li>첫 번째 핵심 필드에 대해 hashCode를 생성. 이를 변수 <code>result</code>에 할당.</li>
+<li>나머지 필드에 대해 아래와 같이 해시코드를 구하도록 하자.</li>
+</ol>
+<ul>
+<li>해시코드 c를 아래와 같은 원칙으로 구해보자.<ul>
+<li>기본 타입 필드일 경우, 해당 타입의 박싱 클래스 타입의 Type.hashCode(f)를 수행 </li>
+<li>참조 타입 필드일 경우, 해당 클래스의 필드 값들에 대해 hashCode를 재귀적으로 호출하고 복잡해질꺼 같으면 필드의 표준형을 만들어 호출하자. 필드 값이 null이면 0을 사용한다.</li>
+<li>필드가 배열일 경우, 핵심 원소에 대해 각각 필드와 같이 다뤄준다. 핵심 원소가 없을 경우 0으로 다뤄주자.</li>
+</ul>
+</li>
+<li>첫 번째 단계에서 구한 해시코드 값을 아래와 같이 갱신하도록 하자.<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">result = <span class="number">31</span> * result + c</span><br></pre></td></tr></table></figure></li>
+</ul>
+<ol start="3">
+<li>hashCode의 반환 값으로 result를 반환.</li>
+<li>작성 후 동치 인스턴스에 대해 같은 해시코드 값을 반환하는지 테스트 코드를 작성하도록 하자.<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> result = Short.hashCode(areaCode);</span><br><span class="line">	result = <span class="number">31</span> * result + Short.hashCode(prefix);</span><br><span class="line">	result = <span class="number">31</span> * result + Short.hashCode(lineNum);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// with Junit</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hashCodeTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">short</span> areaCode = <span class="number">10</span>, prefix = <span class="number">5</span>, lineNum = <span class="number">1</span>;</span><br><span class="line">    PhoneNumber p1 = <span class="keyword">new</span> PhoneNumber(areaCode, prefix, lineNum);</span><br><span class="line">    PhoneNumber p2 = <span class="keyword">new</span> PhoneNumber(areaCode, prefix, lineNum);</span><br><span class="line">    assertEquals(p1.hashCode(), p2.hashCode());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+<li><p>해시 충돌이 더 적은 구현을 원한다면 <code>guava</code>의 <code>Hashing</code> 구현을 참고하자.</p>
+</li>
+<li><p><code>Objects</code> 클래스의 hash 메서드를 이용하면 해쉬 값을 쉽게 구할 수 있으나, 안타깝게도 해당 메서드는 박싱과 언박싱의 과정이 길어서 속도가 더 느리다고 한다. </p>
+</li>
+<li><p>만약 클래스가 불변인 상황에서 해시코드를 구하는 과정이 길거나 오래걸린다면 캐싱하는 방식을 고려해보면 좋다.</p>
+</li>
+<li><p>성능 고려한다고 해시코드 계산 시 핵심 필드를 생략하면 안된다. 해당 필드를 생략할 경우 해시 품질이 나빠져 특정 영역으로 몰릴 수 있기 때문이다.</p>
+</li>
+<li><p>해시코드 생성 규칙을 외부 사용자(API 사용하는)에게 알리지 않아야 추후에 변경이 발생했을 경우에 유연하게 변경이 가능하다.</p>
+</li>
+</ul>
+<h2 id="ITEM-12-toString을-항상-재정의하라"><a href="#ITEM-12-toString을-항상-재정의하라" class="headerlink" title="ITEM 12 - toString을 항상 재정의하라"></a>ITEM 12 - toString을 항상 재정의하라</h2><p>별도로 <code>toString()</code>을 재정의하지 않으면 <code>클래스명@16진수의 해시코드</code>가 반환된다. toString의 일반 규약에서는 <code>간결하고 읽기 쉬운 형식의 정보를 반환해라</code>라고 명세되어 있다고 한다. 또한, 모든 하위 클래스에서 toString을 재정의 하라고 말하고 있다.<br>쉽게 접할 수 있는 디버깅을 하는 상황이라고 생각해봐도 toString()을 재정의하여 유의미한 정보를 보면서 디버깅 하는 것과 그렇지 않은 경우는 많이 다르다. 결국 유의미한 정보를 반환하는 것이 관례이자 규약이라고 하면 이를 지키는 것이 좋을 것이다.</p>
+<ul>
+<li>객체가 가지고 있는 정보는 가급적 전부 반환하는 것이 좋다.</li>
+<li>반환하는 포맷에 대한 고민도 해봐야 한다.<ul>
+<li>포맷의 고정 유무와 상관 없이 <code>유의미한</code> 정보를 반환하고 의미를 분명하게 하는 것은 중요하다.</li>
+</ul>
+</li>
+</ul>
+<p>책의 예제에서는 앞의 PhoneNumber 클래스에서 toString()을 재정의한 예시를 보여주고 있는데, 참고하기 좋은 주석과 내용을 담고 있는 듯 하다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 이 전화번호의 문자열 표현을 반환한다.</span></span><br><span class="line"><span class="comment"> * 이 문자열은 &quot;XXX-YYY-ZZZZ&quot; 형태의 12글자로 구성된다.</span></span><br><span class="line"><span class="comment"> * XXX는 지역 코드, YYY는 Prefix, ZZZZ는 가입자 번호다.</span></span><br><span class="line"><span class="comment"> * 각각의 대문자는 10진수 숫자 하나를 나타낸다.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 전화번호의 각 부분의 값이 너무 작아서 자릿수를 채울 수 없다면,</span></span><br><span class="line"><span class="comment"> * 앞에서부터 0으로 채워나간다. 예컨대 가입자 번호가 123이라면</span></span><br><span class="line"><span class="comment"> * 전화번호의 마지막 네 문자는 &quot;0123&quot;이 된다.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> String.format(<span class="string">&quot;%03d-%03d-%04d&quot;</span>, areaCode, prefix, lineNum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Google.AutoValue</code> 프레임워크에서는 toString을 생성해준다고 하는데, Lombok을 사용했을 때랑 어떻게 차이가 나는지는 직접 해보지 않아서 잘 모르겠다.</p>
+<h2 id="ITEM-13-clone-재정의는-주의해서-진행하라"><a href="#ITEM-13-clone-재정의는-주의해서-진행하라" class="headerlink" title="ITEM 13 - clone 재정의는 주의해서 진행하라"></a>ITEM 13 - clone 재정의는 주의해서 진행하라</h2><ul>
+<li><p><code>Cloneable</code>는 <code>마커 인터페이스</code>로 <strong>이를 구현한 객체는 복제가 가능한 객체</strong>임을 명시하는 용도로 사용한다.</p>
+</li>
+<li><p><code>Cloneable</code> 인터페이스를 구현한 클래스의 인스턴스에서 <code>clone</code>을 호출하면 필드 전체를 복사한 객체를 반환한다. 만약 인터페이스를 구현하지 않을 경우 CloneNotSupportedException을 반환한다.</p>
+</li>
+<li><p><strong>[중요] 메서드 하나 없는 <code>Cloneable</code>은 실상 <code>Object.clone</code>의 동작 방식을 결정하는데, 이례적인 사용으로 보이는 것이 인터페이스를 구현한 것만으로 상위 클래스 메서드 행위의 변경을 가하고 있기 때문이다.</strong></p>
+</li>
+<li><p><code>Cloneable</code> 인터페이스를 구현함으로써, 해당 객체를 사용하는 사용자 측에서는 <code>clone()</code> 메서드가 public으로 제공되며 이를 통해 복제를 할 수 있으리라 판단할 수 있다.</p>
+</li>
+<li><p>클래스의 계층 구조를 가지는 상황에서 하위 클래스가 만약 final 클래스라면 더 이상의 하위 클래스 상속은 발생하지 않기 때문에 관례는 무시해도 되겠지만, 만약 final 클래스의 clone 구현이 super.clone()을 호출하지 않는다면 Cloneable 인터페이스를 구현할 이유가 없다. 왜냐하면, 이는 위에서도 설명한대로 <code>Cloneable</code> 인터페이스가 Object.clone의 동작 방식을 결정하기 때문이고 이런 동작 방식 자체에 기댈 필요가 없기 때문이다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> PhoneNumber <span class="title">clone</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> (PhoneNumber) <span class="keyword">super</span>.clone();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (CloneNotSupportedException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> AssertionError();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>위 예제에서는 상위 타입에서 반환하는 <code>Object</code>타입이 아닌 <code>PhoneNumber</code>타입을 반환하고 있다. 이는 <code>공변 반환 타이핑(covariant return typing)</code>을 나타내고 있다. 다시 말해, 재정의한 메서드의 반환 타입은 상위 클래스의 메서드가 반환하는 타입의 하위 타입일 수 있다는 이야기이다.</p>
+</li>
+<li><p><code>clone()</code> 메서드는 사실상 생성자와 같은 효과를 나타낸다. <code>clone()</code> 재정의 시 주의해야 하는 부분은 원본 객체에 변경이나 사이드 이펙트가 전달되지 않도록 복제된 객체의 불변성을 보장해야 한다.</p>
+</li>
+<li><p>clone() 재정의 시, 클래스에 배열 필드가 있다면 clone()을 호출해도 런타임 타입과 컴파일타임 타입 모두가 원본 배열과 똑같은 타입의 배열을 반환한다. 하지만, 깊은 복사가 진행되는 것이 아니기 때문에 주의해야 한다. </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cloneTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">short</span> areaCode = <span class="number">10</span>, prefix = <span class="number">5</span>, lineNum = <span class="number">1</span>;</span><br><span class="line">    PhoneNumber[] arr = <span class="keyword">new</span> PhoneNumber[]&#123;</span><br><span class="line">        <span class="keyword">new</span> PhoneNumber(areaCode, prefix, lineNum),</span><br><span class="line">        <span class="keyword">new</span> PhoneNumber(areaCode, prefix, lineNum)</span><br><span class="line">    &#125;;</span><br><span class="line">    PhoneNumber[] cloneArr = arr.clone();</span><br><span class="line">    <span class="comment">// Reference Check</span></span><br><span class="line">    assertSame(arr[<span class="number">0</span>], cloneArr[<span class="number">0</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>위의 예제와 같이, 깊은 복사가 필요할 경우 재귀호출을 통하거나 혹은 배열의 요소를 일일이 순회/반복하여 복제하는 작업이 필요하다. </p>
+</li>
+<li><p>생성자에서는 일반적으로 하위 클래스에서 재정의 가능한 매서드를 호출하지 않는 것이 일반적인데, clone도 마찬가지이다. 재정의 시 변경되는 내용에 의해 원본 객체의 상태가 달라질 가능성이 크기 때문이다.</p>
+</li>
+<li><p>clone을 사용하는 것보다 복사 목적으로 사용하는 정잭 팩토리 메서드 혹은 복사 생성자를 사용하는 방법도 있다. 복사 생성자와 팩토리 메서드는 인터페이스 타입의 인자를 받을 수 있기 때문에, 객체 복사 시 유연한 타입 변경이 가능해진다.</p>
+</li>
+<li><p><strong>[결론] clone()의 객체 생성 메카니즘은 위험천만하다. 차라리 복사 정적 팩토리 메서드 혹은 복사 목적의 생성자를 사용하자.</strong></p>
+<h2 id="ITEM-14-Comparable을-구현할지-고려하라"><a href="#ITEM-14-Comparable을-구현할지-고려하라" class="headerlink" title="ITEM 14 - Comparable을 구현할지 고려하라"></a>ITEM 14 - Comparable을 구현할지 고려하라</h2></li>
+</ul>
+<ul>
+<li><code>Comparable.compareTo()</code>는 동치성 비교 및 순서까지 비교 가능하다.</li>
+<li><code>Object.equals()</code>와 마찬가지로 반사성, 대칭성, 추이성을 충족해야 한다. 또한, 해당 원칙을 제대로 지키지 않으면 equals와 마찬가지로 해당 구현을 이용하는 다른 클래스에서 예상하지 못한 결과를 반환할 수 있다.</li>
+<li><code>Comparable</code>을 구현하지 않은 필드나 표준이 아닌 순서로 비교하고 있는 상황이라면, <code>Comparator</code>를 대신 사용하자.</li>
+<li><code>compareTo()</code>에서 기본 타입을 비교 할때, 해당 기본 타입의 래퍼 타입의 <code>compare()</code>를 사용하여 비교하자. &lt;, &gt; 등의 연산자는 거추장스럽고 오류를 유발할 수 있다.</li>
+<li>필드가 여러개 있는 클래스의 경우, 핵심 필드부터 차례대로 비교하도록 하자<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(PhoneNumber o)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 첫 번째 핵심 필드</span></span><br><span class="line">    <span class="keyword">int</span> result = Short.compare(areaCode, o.areaCode);</span><br><span class="line">    <span class="keyword">if</span> (result == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 두 번째 핵심 필드</span></span><br><span class="line">        result = Short.compare(prefix, o.prefix);</span><br><span class="line">        <span class="keyword">if</span> (result == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// 세 번째 핵심 필드</span></span><br><span class="line">            result = Short.compare(lineNum, o.lineNum);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><code>Comparator</code>를 사용하는 방식은 FluentAPI 형식을 사용할 수 있어서 코드 자체가 우아하게 전개되지만, 성능 로스가 있다고 한다.</li>
+<li><code>Comparator</code>는 보조 메서드를 여러개 제공하고 있다. int보다 작은 타입의 경우 comparingInt를 사용하면 되고 float의 경우는 comparingDouble을 이용하면 된다.</li>
+</ul>
+</div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2019/02/19/Java/EffectiveJava3e_ch3/">Effective Java - 3장</a><a class="next" href="/2019/01/04/Spring/BATCH_3/">스프링 부트 배치 #3</a></div><script src="https://utteranc.es/client.js" repo="thefeeling/thefeeling.github.io" issue-term="title" theme="github-light" crossorigin="anonymous" async> </script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://thefeeling.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 카테고리</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ARCHITECTURE/">ARCHITECTURE</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/AWS/">AWS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS/">CS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DATABASE/">DATABASE</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DDD/">DDD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DIARY/">DIARY</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kotlin/">Kotlin</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MESSAGING/">MESSAGING</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Persistence/">Persistence</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 태그</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 과거</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/08/13/DIARY/20210813/">20210813</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/09/ARCHITECTURE/DATA_INTENSIVE_APPLICATION/">데이터 중심 어플리케이션 설계 - 7장 트랜잭션</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/08/DIARY/20210808/">20210808</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/05/DIARY/20210805/">20210805</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/01/DIARY/20210801/">20210801</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/30/DIARY/20210730/">20210730</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/28/DIARY/20210728/">20210728</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/DIARY/20210727/">20210727</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/Spring/MVC_RequestParam/">MVC와 WebFlux에서의 @ReqeustParam</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/Kotlin/Kotlin_In_Action/">Kotlin-In-Action Generics</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/." rel="nofollow">Choi's Dev.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" id="maid-script" mermaidoptioins="{&quot;startOnload&quot;:true}" src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js?v=1.0.0"></script><script>if (window.mermaid) {
+  var options = JSON.parse(document.getElementById('maid-script').getAttribute('mermaidoptioins'));
+  mermaid.initialize(options);
+}
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="Copy Successed!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>

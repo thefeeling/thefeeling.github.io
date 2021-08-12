@@ -1,0 +1,100 @@
+<!DOCTYPE html><html lang="ko"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content=""><title>20190504 | Choi's Dev</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create','UA-203671947-1','auto');ga('send','pageview');
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 5.4.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">20190504</h1><a id="logo" href="/.">Choi's Dev</a><p class="description">Software Engineer, Backend-Developer</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 홈</i></a><a href="/archives/"><i class="fa fa-archive"> 아카이브</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">20190504</h1><div class="post-meta">2019-05-04<span> | </span><span class="category"><a href="/categories/DIARY/">DIARY</a></span></div><div class="post-content"><h1 id="20190504"><a href="#20190504" class="headerlink" title="20190504"></a>20190504</h1><h2 id="1-RxJava-리액티브-프로그래밍-읽기-실습"><a href="#1-RxJava-리액티브-프로그래밍-읽기-실습" class="headerlink" title="1. RxJava 리액티브 프로그래밍 읽기/실습"></a>1. RxJava 리액티브 프로그래밍 읽기/실습</h2><ul>
+<li>3장, RxJava 메커니즘</li>
+</ul>
+<p>에러처리에 대한 부분부터 배압(Backpressure)까지 학습을 하였고, 에러 처리에 대한 매커니즘부터 배압까지 자연스럽게 내용이 연결되어 있어서 이해하는데에는 크게 무리가 없었다. 다만, 책을 읽으면 읽을수록 봐야 할 API와 구현체에 대한 개수가 늘어나는거 같아서, 책에서만 제공해주는 예제 외에도 실제 구현을 어떻게 하는지에 대해서는 깃헙을 돌아다니면서 코드를 좀 살펴봐야 좀 더 이해가 높아질 수 있을거 같았다. </p>
+<ul>
+<li><p>여러개의 생산자와 소비자가 공유 객체를 가질 경우에는?</p>
+<ul>
+<li>merge 연산자를 사용하여 다수의 생산자/소비자가 순차접근을 할 수 있도록 동기화 처리 해야 한다.</li>
+</ul>
+</li>
+<li><p>에러처리</p>
+<ul>
+<li>에러처리에 대한 통보</li>
+<li>재시도(retryXX Method)</li>
+<li>대체 데이터 통보(onErrorXX Method)</li>
+</ul>
+</li>
+<li><p>배압 정책/전략 지정</p>
+<ul>
+<li>Flowable/Observable 생성 시 지정</li>
+<li>매소드로 지정</li>
+<li>생산자측, 스캐줄러 지정 시(observeOn()) 버퍼 사이즈를 지정</li>
+</ul>
+</li>
+<li><p>배압 정책의 종류</p>
+<ul>
+<li>BUFFER</li>
+<li>DROP</li>
+<li>LATEST</li>
+<li>ERROR</li>
+<li>NONE</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-Effective-Java-3e-읽기-실습"><a href="#2-Effective-Java-3e-읽기-실습" class="headerlink" title="2. Effective-Java-3e 읽기/실습"></a>2. Effective-Java-3e 읽기/실습</h2><ul>
+<li>아이템 26, Raw Type은 사용하지 말아라</li>
+</ul>
+<p>제네릭을 사용했을 때, 반드시 알아야 할 개념에 대해 소개해주고 있어서, 다른 문서나 글을 읽었을 때 몰랐던 여러 개념을 파악 할 수 있어서 좋았다. 그리고 RawType의 컬렉션 사용에 대한 자바의 히스토리에 대해 알 수 있었고, 제네릭이 도입됨에 따라 가질 수 있는 컴파일 타임의 타입 안전성과 런타임에서의 타입소거 등에 대해서도 예제와 설명를 통하여 확인 할 수 있어서 좋았다. 아래는 책에 나와 있는 내용을 일부 발췌하여 나중에라도 까먹을 경우(??)에 다시 보고자 기록을 해둘려고 한다.</p>
+<table>
+<thead>
+<tr>
+<th>용어</th>
+<th>예</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>매개변수화 타입(Parameterized Type)</td>
+<td><code>List&lt;String&gt;</code></td>
+</tr>
+<tr>
+<td>실제 타입 매개변수(Actual Type Parameter)</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>제네릭 타입(Generic Type)</td>
+<td><code>List&lt;E&gt;</code></td>
+</tr>
+<tr>
+<td>정규 타입 매개변수(Formal Type Parameter)</td>
+<td><code>E</code></td>
+</tr>
+<tr>
+<td>비한정적 타입 매개변수(Bounded Type Parameter)</td>
+<td><code>List&lt;?&gt;</code></td>
+</tr>
+<tr>
+<td>로우 타입(Raw Type)</td>
+<td><code>List</code></td>
+</tr>
+<tr>
+<td>한정적 타입 매개변수(Bounded Type Parameter)</td>
+<td><code>List&lt;E extends Number&gt;</code></td>
+</tr>
+<tr>
+<td>재귀적 타입 한정(Recursive Type Bound)</td>
+<td><code>&lt;T extends Comparable&lt;T&gt;&gt;</code></td>
+</tr>
+<tr>
+<td>한정적 와일드카드 타입(Bounded Wildcard Type)</td>
+<td><code>List&lt;? extends Number&gt;</code></td>
+</tr>
+<tr>
+<td>제네릭 매서드(Generic Method)</td>
+<td><code>static &lt;E&gt; List&lt;E&gt; asList(E[] a)</code></td>
+</tr>
+<tr>
+<td>타입 토큰(Type Token)</td>
+<td><code>String.class</code></td>
+</tr>
+</tbody></table>
+</div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2019/05/06/Kotlin/Rx_Kotlin_1/">RxKotlin #1</a><a class="next" href="/2019/05/01/Spring/LOG/">Logging</a></div><script src="https://utteranc.es/client.js" repo="thefeeling/thefeeling.github.io" issue-term="title" theme="github-light" crossorigin="anonymous" async> </script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://thefeeling.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 카테고리</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ARCHITECTURE/">ARCHITECTURE</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/AWS/">AWS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS/">CS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DATABASE/">DATABASE</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DDD/">DDD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DIARY/">DIARY</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kotlin/">Kotlin</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MESSAGING/">MESSAGING</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Persistence/">Persistence</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 태그</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 과거</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/08/13/DIARY/20210813/">20210813</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/09/ARCHITECTURE/DATA_INTENSIVE_APPLICATION/">데이터 중심 어플리케이션 설계 - 7장 트랜잭션</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/08/DIARY/20210808/">20210808</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/05/DIARY/20210805/">20210805</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/01/DIARY/20210801/">20210801</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/30/DIARY/20210730/">20210730</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/28/DIARY/20210728/">20210728</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/DIARY/20210727/">20210727</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/Spring/MVC_RequestParam/">MVC와 WebFlux에서의 @ReqeustParam</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/Kotlin/Kotlin_In_Action/">Kotlin-In-Action Generics</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/." rel="nofollow">Choi's Dev.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" id="maid-script" mermaidoptioins="{&quot;startOnload&quot;:true}" src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js?v=1.0.0"></script><script>if (window.mermaid) {
+  var options = JSON.parse(document.getElementById('maid-script').getAttribute('mermaidoptioins'));
+  mermaid.initialize(options);
+}
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="Copy Successed!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>

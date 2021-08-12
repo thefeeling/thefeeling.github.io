@@ -1,0 +1,208 @@
+<!DOCTYPE html><html lang="ko"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content=""><title>Alternatives to JPA | Choi's Dev</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create','UA-203671947-1','auto');ga('send','pageview');
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 5.4.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Alternatives to JPA</h1><a id="logo" href="/.">Choi's Dev</a><p class="description">Software Engineer, Backend-Developer</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 홈</i></a><a href="/archives/"><i class="fa fa-archive"> 아카이브</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Alternatives to JPA</h1><div class="post-meta">2019-05-01<span> | </span><span class="category"><a href="/categories/Persistence/">Persistence</a></span></div><div class="post-content"><h1 id="Alternatives-to-JPA"><a href="#Alternatives-to-JPA" class="headerlink" title="Alternatives to JPA"></a>Alternatives to JPA</h1><p>같이 근무했던 시니어 개발자분께서 내용이 좋다면서 추천해주셔서 <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=2zQdmC0vnFU">링크</a>를 통하여 동영상을 시청했다. 분량은 대충 1시간 가량 되는데, JPA를 사용하면서도 하이버네이트에 대한 충분한 학습을 하지 못해서 겪었던 지난 1년간의 많은 시행착오들이 생각이 났고, Kotlin을 메인으로 사용했을때의 다양한 선택지에 대해서 고민을 해볼 수 있었던거 같아서 매우 유익했다고 할 수 있다. </p>
+<ul>
+<li>데이터를 표현하는 관점에 따라 달라 질 수 있다. <ul>
+<li>Relational</li>
+<li>OOP</li>
+</ul>
+</li>
+<li>두 가지 관점 중 어디를 중점으로 설계 하느냐에 따라 방향이 크게 달라질 수 있다.</li>
+<li>데이터 중심(data-centric)의 경우, OOP적인 설계가 크게 맞지 않을 수 있고, 요즘 ORM을 사용하는 것이 유행인것 마냥 흘러가고 있어서 이에 대한 진지한 고민이 필요해보인다.</li>
+<li>Hibernate가 커버하는 SQL은 약 95프로에 가까운데, 나머지 5프로에 대해서는 커버를 못하기 때문에 실제로 하이엔드 성능을 요구하는 상황에서는 ORM이 맞지 않다고 볼 수 있다.</li>
+</ul>
+<h2 id="JPA의-장단점"><a href="#JPA의-장단점" class="headerlink" title="JPA의 장단점?"></a>JPA의 장단점?</h2><h3 id="장점"><a href="#장점" class="headerlink" title="장점"></a>장점</h3><ul>
+<li>비즈니스 레이어에 대해 DB 중심적인 사고가 아닌 어플리케이션 레이어에서 이를 처리해본 사람들은 NoSQL을 사용했을 때의 접근이 수월했다.</li>
+<li>디비 벤더 종속적으로 개발을 하지 않아도 된다.</li>
+<li>SQL문장에 대해 크게 학습을 하지 않아도 된다.<ul>
+<li>문장으로 쓰느냐 vs 코드(API)로 이를 표현하느냐?</li>
+<li>API로 사용하는 것이 Type-safe한 전개가 가능하기 때문에 안정적이다.</li>
+</ul>
+</li>
+<li>Stateful, Statless에 대한 지원<h3 id="단점"><a href="#단점" class="headerlink" title="단점"></a>단점</h3></li>
+<li>SQL에 친숙한 사람들의 경우, JPQL에 대한 반감 혹은 적응이 힘들 수 있다. 두 가지 접근 방법에 대해 상이한 부분이 존재하며 결국 둘다 배워야 하는 점이 생긴다.</li>
+<li>Hibernate에 대한 러닝커브가 상당히 높다.</li>
+<li>Bulk Operation의 성능이 좋지 않다.</li>
+<li>JPA Vendor에서 제공해주는 기능에 대해서 학습 비용이 발생한다.<ul>
+<li>HQL, @DynamicInsert, @LazyCollection</li>
+<li>2nd Cache(recommend JCache(JSR-305))</li>
+</ul>
+</li>
+</ul>
+<h2 id="그래서-쿠팡은-어떻게"><a href="#그래서-쿠팡은-어떻게" class="headerlink" title="그래서 쿠팡은 어떻게?"></a>그래서 쿠팡은 어떻게?</h2><ul>
+<li>성능보다는 생산성을 위주로 사용했으며, 오픈 후 성능이 나오질 않아서 JPA에 대한 학습도 진행하고 튜닝하는 등의 작업을 진행했었다.</li>
+<li>Not Deep Dive<ul>
+<li>Missing Override(hashCode, equals and toString)</li>
+<li>No Using @NatualId: 비즈니스적인 필요에 의해 @NatualId가 필요한 경우가 있다.</li>
+</ul>
+</li>
+<li>Best Practice가 존재하질 않아 제대로 사용하지 못한 케이스가 많았다.</li>
+<li>퍼포먼스가 나오질 않다보니 비용 측면에서도 충분히 줄일 수 있는 부분이 많은데, 제대로 학습을 하지 못해서 생긴 이슈 아닌 이슈가 많았다고 한다.</li>
+</ul>
+<h2 id="그래서-JPA에-대안이-될-수-있는-솔루션들은"><a href="#그래서-JPA에-대안이-될-수-있는-솔루션들은" class="headerlink" title="그래서 JPA에 대안이 될 수 있는 솔루션들은?"></a>그래서 JPA에 대안이 될 수 있는 솔루션들은?</h2><ul>
+<li>단점은 버리고 장점을 취할 수 있는 다른 대안들은 뭐가 있을까?</li>
+<li>Design Principle<ul>
+<li>OOP 기반의 Multi-DB Vendor</li>
+<li>No Need stateful for Reference Object</li>
+<li>Support association, inheritance, converter in JPA</li>
+</ul>
+</li>
+<li>Performance<ul>
+<li>Speed up to Plain SQL</li>
+<li>Stateless</li>
+<li>Support Asynchronous or Reactive</li>
+<li>Support Bulk or Batch Operation</li>
+</ul>
+</li>
+</ul>
+<h3 id="Slick"><a href="#Slick" class="headerlink" title="Slick"></a>Slick</h3><ul>
+<li>Database Access Library</li>
+<li>ORM =&gt; Functional Relational Mapping</li>
+<li>Relational Model to Scala OOP</li>
+<li>Natural fit</li>
+<li>Stateless</li>
+<li>Matures(Slick version 3)(Non-Blocking DBIO)</li>
+</ul>
+<h3 id="jOOQ"><a href="#jOOQ" class="headerlink" title="jOOQ"></a>jOOQ</h3><p>가장 도입하기 쉽고 러닝커브가 낮음</p>
+<ul>
+<li>SQL과 유사하게 API를 사용할 수 있으며, Type-Safe한 성격은 그래도 가져갈 수 있다.</li>
+<li>DB-First, DB Schema로부터 자바의 엔티티 클래스를 만들어야 하는 단점이 존재한다.</li>
+<li>Stateless</li>
+<li>Need DBMS Owner Authority</li>
+</ul>
+<h3 id="Requery"><a href="#Requery" class="headerlink" title="Requery"></a>Requery</h3><ul>
+<li>No Refelection - apt code generation</li>
+<li>Fast Startup &amp; Performance</li>
+<li>Schema Generation</li>
+<li>Non-Blocking</li>
+<li>upsert</li>
+<li>compile time entity validation</li>
+<li>Support alomost JPA Annotations</li>
+</ul>
+<h3 id="Exposed-Kotlin-SQL-Framework"><a href="#Exposed-Kotlin-SQL-Framework" class="headerlink" title="Exposed - Kotlin SQL Framework"></a>Exposed - Kotlin SQL Framework</h3><ul>
+<li>Lightweight SQL Framework</li>
+<li>Two Layers of data access<ul>
+<li>Typesafe SQL wrapping DSL</li>
+<li>Lightweight Data Access Object</li>
+</ul>
+</li>
+<li>Not Mature…</li>
+</ul>
+<h3 id="그래서-적합한-대안은"><a href="#그래서-적합한-대안은" class="headerlink" title="그래서 적합한 대안은?"></a>그래서 적합한 대안은?</h3><ul>
+<li>기존 레거시 데이터베이스가 존재하는 경우? 자바만 하는 경우?<ul>
+<li>jOOQ, requery</li>
+</ul>
+</li>
+<li>Scala만 사용하는 경우?<ul>
+<li>Slick</li>
+</ul>
+</li>
+<li>Kotlin Only?<ul>
+<li>requery, Exposed</li>
+</ul>
+</li>
+<li>언어와 상관 없다면?<ul>
+<li>requery</li>
+</ul>
+</li>
+<li>Reactive Programming?<ul>
+<li>requery with kotlinx-requery</li>
+<li>kotlinx-rxjava2-jdbc</li>
+</ul>
+</li>
+</ul>
+<h2 id="Requery-Overview"><a href="#Requery-Overview" class="headerlink" title="Requery Overview"></a>Requery Overview</h2><ul>
+<li>안드로이드에서만 쓰이는 것이 아니다.</li>
+<li>충분히 서버 어플리케이션에서도 사용이 가능하다.</li>
+<li>하이버네이트의 Proxy 개념이 없다. 즉, Lazy Initialize라는 개념 자체가 없다. Mybatis랑 비슷한 개념으로 생각해도 좋다. 속도가 생각보다 빠르다.</li>
+<li>부가적으로 라이브러리는 필요없다. </li>
+<li>Upsert 기능이 굉장히 매력적이다.</li>
+<li>Compile Time Entity/Query Validation</li>
+<li>Entity is stateless</li>
+<li>Thread에 제한을 받지 않음(vs JPA EntityManager)</li>
+<li>Support RxJava, Async Operations on Java8</li>
+</ul>
+<h3 id="Why-Requery"><a href="#Why-Requery" class="headerlink" title="Why Requery?"></a>Why Requery?</h3><ul>
+<li>Provide Benefit of ORM<ul>
+<li>Entity Mapping</li>
+<li>Schema Generation</li>
+<li>Compile Time Error Detecting</li>
+</ul>
+</li>
+</ul>
+<p>Bulk Operation은 JPA에 비해서 거의 100배 가량 빠르다고 한다. REST API 호출에서 퍼포먼스 Checking을 했을 때는 약 10배 가량 JPA를 사용했을때보다 빠르다고 한다. Upsert 기능이 제공되고 레이지한 로드(프록시를 사용한 접근이 아닌 특정 컬럼만 일부 Fetch하고 추후에 필요한 데이터를 가져오는 방식)도 가능하다.</p>
+<h3 id="Define-Entity-Java-Kotlin"><a href="#Define-Entity-Java-Kotlin" class="headerlink" title="Define Entity - Java, Kotlin"></a>Define Entity - Java, Kotlin</h3><p>JPA와 Hibernate보다는 간결한 기능을 제공하고 있다. 간결한 기능을 제공한다는 것은 JPA와 Hibernate보다는 기능적인 가지 수가 좀 적을 수 있다는 이야기이다. </p>
+<h3 id="EntityDataStore"><a href="#EntityDataStore" class="headerlink" title="EntityDataStore"></a>EntityDataStore</h3><ul>
+<li>FindByKey</li>
+<li>select/insert/update/upsert/delete</li>
+<li>where/eq,lte,lt,gt,gte,like,in,not</li>
+<li>groupBy / having / limit / offset</li>
+<li>support SQL Functions<ul>
+<li>count, sum, avg, upper, lower …</li>
+</ul>
+</li>
+<li>raw query</li>
+</ul>
+<h3 id="CoroutineEntityDataStore"><a href="#CoroutineEntityDataStore" class="headerlink" title="CoroutineEntityDataStore"></a>CoroutineEntityDataStore</h3><ul>
+<li>코틀린에서는 코루틴을 통하여 비동기 프로그래밍이 가능하다. JDBC가 블록킹 구간이 존재하지만 엔티티를 ResultSet으로부터 인스턴싱하는 과정을 비동기로하면 CPU를 좀 더 효율적으로 사용할 수 있다.</li>
+<li>requery는 자바의 CompletableFuture를 사용</li>
+</ul>
+<h3 id="spring-data-requery"><a href="#spring-data-requery" class="headerlink" title="spring-data-requery"></a>spring-data-requery</h3><ul>
+<li>운영 시스템은 아니더라도 개인 프로젝트에 적용해본다면 별 문제 없겠지만, 운영시스템에 이걸 적용한다면 ….. 상황을 겪을 수 있다. 그래서 만든 것이 spring-data-requery 프로젝트라고 한다.</li>
+<li>RequeryOperations</li>
+<li>RequeryTransactionManager for TransactionManager<ul>
+<li>Support Spring @Transactional</li>
+</ul>
+</li>
+<li>Better performance than spring-data-jpa<ul>
+<li>exists, paging할때, 매번 연관된 엔티티를 모두 조회하지 않는다.</li>
+</ul>
+</li>
+<li>Repository build in SQL</li>
+<li>ByPropertyName Auto Generation Methods</li>
+<li>@Query, Native SQL Query</li>
+<li>Query By Example</li>
+<li>Not Support<ul>
+<li>조인에 대해서는 개발자가 명시를 해줘야 한다. Annotation Path에 대한 자동으로 Query를 만들어 주지는 않는다.</li>
+<li>Named Parameter의 경우 현재 지원하지 않지만, 추후 지원이 가능 할거라고 한다.<h3 id="Query-By-Example"><a href="#Query-By-Example" class="headerlink" title="Query By Example"></a>Query By Example</h3></li>
+</ul>
+</li>
+<li>검색 조건에 대한 Predicate를 작성하는 거랑 비슷함<h3 id="Query-By-Property"><a href="#Query-By-Property" class="headerlink" title="Query By Property"></a>Query By Property</h3></li>
+<li>JPA의 가장 강력한 부분인데, 이에 대한 지원은 하고 있는데, Association에 대한 지원은 위에서 말한대로 현재 없다고 한다.</li>
+<li>JPA의 findXXX 매소드 시그니처를 사용 하듯이 사용하면 된다.</li>
+</ul>
+<h3 id="Exists"><a href="#Exists" class="headerlink" title="Exists"></a>Exists</h3><ul>
+<li>현재 JPA에서는 ExistExecution에서 모든 조회 결과를 가져오고 이에대한 존재 유무를 체크하게 된다고 한다.</li>
+<li>spring-data-requery에서는 ExistExecution 처리 시, 조회 결과를 단건만 가져와서 조회 조건에 대한 존재 유무를 체크한다고 한다.</li>
+</ul>
+<h3 id="Delete-in-JPA"><a href="#Delete-in-JPA" class="headerlink" title="Delete in JPA"></a>Delete in JPA</h3><ul>
+<li>연관 관계가 어떻게 되는지 모두 파악 후 Delete에 대한 실행이 진행된다.</li>
+<li>연관 관계에 대한 모든 파악을 진행 후 진행해야 하기 때문에 결국 <code>Read</code> 작업이 선행될 수 밖에 없다.</li>
+<li>Bulk Operation의 경우, 성능상 손실이 많이 발생한다.</li>
+<li>Bulk Operation의 원래 의도는 Set 방식으로 바로 지우는 것을 원하게 되는데, 이렇게 Read 액션이 먼저 발생하게 되면 성능적으로 느려질 수 밖에 없는 상황이다. Set 방식으로 움직여야 하는 것은 Direct로 SQL 구문을 사용하여 처리 할 수 있도록 가이드를 해주는 것이 중요하다. 깊게 이해하여 사용하는 것이 너무 중요하다.</li>
+<li>작게는 3배 많게는 100배 가량 퍼포먼스 차이가 발생할 수 있다고 한다.</li>
+</ul>
+<h3 id="Future-Works"><a href="#Future-Works" class="headerlink" title="Future Works"></a>Future Works</h3><ul>
+<li>Named Parameter</li>
+<li><code>@Param</code> in Spring Data</li>
+<li>Complicated Aggregation Operations</li>
+<li>Requery for Apache Phoenix(Hbase)</li>
+<li>CoroutineEntityStore </li>
+</ul>
+<h2 id="QnA"><a href="#QnA" class="headerlink" title="QnA"></a>QnA</h2><ul>
+<li>MySQL에서 넘어가는 이유가 뭔가요?<ul>
+<li>Money!!</li>
+<li>AWS RDS Aurora가 비용이 너무 비쌈…ㅠㅠ</li>
+<li>벤치마크 했을 때, 포스트그래가 생각보다 성능이 좋았다.</li>
+<li>JPA를 쓴 것이 성능이 느려서 고생을 했었는데, DB 벤더를 바꿈으로서 얻게 되는 이점이 생각보다 많이 있을 거라고 생각하여 변경을 하게 됐다.</li>
+</ul>
+</li>
+</ul>
+</div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2019/05/01/Spring/LOG/">Logging</a><a class="next" href="/2019/05/01/DIARY/20190501/">20190501</a></div><script src="https://utteranc.es/client.js" repo="thefeeling/thefeeling.github.io" issue-term="title" theme="github-light" crossorigin="anonymous" async> </script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://thefeeling.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 카테고리</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ARCHITECTURE/">ARCHITECTURE</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/AWS/">AWS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS/">CS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DATABASE/">DATABASE</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DDD/">DDD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DIARY/">DIARY</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kotlin/">Kotlin</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MESSAGING/">MESSAGING</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Persistence/">Persistence</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 태그</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 과거</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/08/13/DIARY/20210813/">20210813</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/09/ARCHITECTURE/DATA_INTENSIVE_APPLICATION/">데이터 중심 어플리케이션 설계 - 7장 트랜잭션</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/08/DIARY/20210808/">20210808</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/05/DIARY/20210805/">20210805</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/01/DIARY/20210801/">20210801</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/30/DIARY/20210730/">20210730</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/28/DIARY/20210728/">20210728</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/DIARY/20210727/">20210727</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/Spring/MVC_RequestParam/">MVC와 WebFlux에서의 @ReqeustParam</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/Kotlin/Kotlin_In_Action/">Kotlin-In-Action Generics</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/." rel="nofollow">Choi's Dev.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" id="maid-script" mermaidoptioins="{&quot;startOnload&quot;:true}" src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js?v=1.0.0"></script><script>if (window.mermaid) {
+  var options = JSON.parse(document.getElementById('maid-script').getAttribute('mermaidoptioins'));
+  mermaid.initialize(options);
+}
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="Copy Successed!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>

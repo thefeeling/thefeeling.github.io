@@ -1,0 +1,221 @@
+<!DOCTYPE html><html lang="ko"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content=""><title>Netty-In-Action | Choi's Dev</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create','UA-203671947-1','auto');ga('send','pageview');
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 5.4.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Netty-In-Action</h1><a id="logo" href="/.">Choi's Dev</a><p class="description">Software Engineer, Backend-Developer</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 홈</i></a><a href="/archives/"><i class="fa fa-archive"> 아카이브</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Netty-In-Action</h1><div class="post-meta">2021-07-18<span> | </span><span class="category"><a href="/categories/Java/">Java</a></span></div><div class="post-content"><h1 id="Netty-In-Action"><a href="#Netty-In-Action" class="headerlink" title="Netty-In-Action"></a>Netty-In-Action</h1><h1 id="1부-네티-개념과-아키텍처"><a href="#1부-네티-개념과-아키텍처" class="headerlink" title="1부, 네티 개념과 아키텍처"></a>1부, 네티 개념과 아키텍처</h1><h2 id="1장-네티-비동기-이벤트-기반-네트워킹-프레임워크"><a href="#1장-네티-비동기-이벤트-기반-네트워킹-프레임워크" class="headerlink" title="1장. 네티: 비동기 이벤트 기반 네트워킹 프레임워크"></a>1장. 네티: 비동기 이벤트 기반 네트워킹 프레임워크</h2><ul>
+<li>최초 자바 API(java.net)은 네이티브 시스템 소켓 라이브러리가 제공하는 블로킹 함수만 제공<ul>
+<li>다수의 클라이언트를 관리하려면 새로운 클라이언트 소켓마다 새로운 스레드를 할당해야 함.</li>
+<li>여러 스레드가 입출력 데이터를 무한정 대기하는 상태가 유지될 수 있고, 이는 곧 리소스에 대한 낭비로 이어질 수 있음.</li>
+<li>운영체제에 따라 다르지만 스텍의 기본 크기는 64KB ~ 1MB까지 차지할 수 있다. JVM이 많은 수의 스레드 생성을 지원하지만, 동시 접속이 한계에 이르는 순간(1만개 전후) 컨텍스트 스위칭에 따른 오버헤드가 심각한 문제가 될수 있다.</li>
+</ul>
+</li>
+<li>네이티브 소켓 라이브러리에는 오래전부터 네트워크 리소스 사용률을 세부적으로 제어할수 있는 논블로킹(non-blocking) 호출이 포함되어 있다.<ul>
+<li>setsockopt() 시스템 함수를 통한 블로킹 콜에 대한 옵션 설정 가능</li>
+<li>이벤트 통지 API(epoll/kqueue)를 통하여 논블로킹 소켓의 집합을 등록하면 읽거나 기록할 데이터가 준비됐는지 여부를 알수 있다. <a target="_blank" rel="noopener" href="https://long-zhou.github.io/2012/12/21/epoll-vs-kqueue.html">참고</a></li>
+<li>논블로킹 입출력을 위한 자바의 기능 지원은 1.4부터 java.nio 패키지를 통하여 이뤄졌다.</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://drek4537l1klr.cloudfront.net/maurer/Figures/01fig02.jpg" alt="java.nio.channels.Selector"></p>
+<ul>
+<li><p>자바의 논블로킹 설계의 핵심은 바로 <code>java.nio.channels.Selector</code> 클래스이다. 시스템의 이벤트 통지 API를 그대로 사용하며 언제나 읽기/쓰기 작업의 완료 상태를 확인할 수 있으므로 단일 스레드로 여러 동시 연결을 처리할 수 있다.</p>
+<ul>
+<li>적은 수의 스레드로 더 많은 연결을 처리할 수 있으므로 컨텍스트 스위칭에 따른 오버헤드와 메모리 관리가 원활해짐</li>
+<li>스레드의 상태가 점유가 되어 있지 않기 때문에, 입출력 외에 다른 작업을 사용할 수 있음.</li>
+</ul>
+</li>
+<li><p>네티는 네트워킹 도메인에서 가장 유명한 자바 프레임워크로 기반 구현의 복잡성을 단순한 추상화로 감춰 개발자가 어플리케이션 구현 영역에 집중할 수 있도록 도와준다.</p>
+<ul>
+<li>블로킹/논블로킹 방식의 모두 지원</li>
+<li>코어 자바 API보다 높은 처리량과 짧은 지연 시간. 풀링/재사용을 통한 리소스 소비 감소, 메모리 복사 최소화</li>
+</ul>
+</li>
+<li><p>이벤트 기반의 비동기식으로 어플리케이션을 작성할때는 특수한 문제에 대한 고려가 필요. </p>
+<ul>
+<li>발생하는 이벤트에 대해 언제든지/순서에 상관없이 응답을 할 수 있음, 이는 곧, <code>증가하는 처리량에 맞게 시스템/네트워크/프로세스의 능력을 작업량 증가에 맞게 늘리는 능력</code>으로 정의할 수 있는 최고 수준의 확장성을 갖추는데 필수적임.</li>
+<li>논블로킹 네트워크 연결은 작업 완료를 기다릴 필요가 없다. 비동기 코드는 바로 반환을 하며 완료가 되면 추후에 이를 통지하는 방식이다.</li>
+<li>셀렉터는 적은 수의 스레드로 여러 연결에서 이벤트를 모니터링 할 수 있게 해줌</li>
+</ul>
+</li>
+<li><p>네티의 핵심 컴포넌트</p>
+<ul>
+<li>Channel<br>하나 이상의 입출력 작업(읽기/쓰기)을 수행할수 있는 하드웨어 장치/파일/네트워크 소켓/프로그램 컴포넌트와 같은 엔티티에 대한 열린 연결, 들어오는 Inbound와 나가는 Outbound를 위한 운송수단으로 생각하자</li>
+<li>Callback<br>콜백은 관심 대상에게 작업 완료를 알리는 가장 일반적인 방법으로 네티는 이벤트를 처리할 때 내부적으로 콜백을 이용한다. 콜백 트리거가 되면 ChannelHandler 인터페이스 구현을 통해 이벤트를 처리할수 있다.</li>
+<li>Future<br>퓨처는 작업이 완료되면 어플리케이션에 이를 알리는 방법이다. 비동기 작업의 결과를 접근할 수 있게 해준다. JDK에서는 java.<code>util.concurrent.Future</code> 인터페이스를 제공하지만, 해당 구현은 <code>작업 완료 여부 확인</code>과 <code>완료전까지 블록킹</code>하는 기능만 존재한다. 네티는 이를 개선한 <code>ChannelFuture</code>를 사용한다. ChannelFuture에는 ChannelFutureListener 인스턴스를 하나 이상 등록할 수 있으며 완료시점에 operationComplete() 콜백 메소드가 호출이 된다. 해당 콜백 실행 시점에 완료/오류 등을 확인 가능하다.<br>네티의 모든 아웃바운드 입출력은 ChannelFuture를 반환하고 진행에 블로킹 작업은 없다. 모든것은 비동기에 이벤트 기반이다.</li>
+</ul>
+</li>
+<li><p>이벤트와 핸들러<br>네티는 작업 상태 변화를 알리기 위해 고유한 이벤트를 사용한다. <code>로깅</code>, <code>데이터 변환</code>, <code>흐름 제어</code>, <code>어플리케이션 논리</code> 등의 동작을 포함한다. 이벤트들은 크게 <code>인바운드</code>와 <code>아웃바운드</code> 데이터 흐름의 연관성을 기준으로 분류한다.<br>모든 이벤트는 핸들러 클래스의 사용자 구현 메서드로 전달할 수 있다. <strong>다시 말해, 각 핸들러 인스턴스는 특정 이벤트에 반응하여 실행하는 일종의 콜백이라고 이해하면 된다.</strong></p>
+<blockquote>
+<ul>
+<li>인바운드: 연결 활성화/비활성화, 데이터 읽기, 사용자 이벤트, 오류 이벤트</li>
+<li>아웃바운드: 원격 피어 연결 열기/닫기, 소켓에 데이터 쓰기/플러시</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h2 id="2장-첫-번째-네티-어플리케이션"><a href="#2장-첫-번째-네티-어플리케이션" class="headerlink" title="2장. 첫 번째 네티 어플리케이션"></a>2장. 첫 번째 네티 어플리케이션</h2><ul>
+<li>책의 경우 maven 기준으로 설명을 하고 있지만, 예제는 gradle 기반의 프로젝트에서 작성했으며, <code>4.1.65.Final</code> 버젼을 기준으로 실습 편의성을 위해 <code>netty-all</code> 디펜던시를 참조했다.<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">  implementation &#x27;io.netty:netty-all:4.1.65.Final&#x27;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="EchoServer-코드-작성"><a href="#EchoServer-코드-작성" class="headerlink" title="EchoServer 코드 작성"></a>EchoServer 코드 작성</h4><ul>
+<li>아래 <code>EchoServer</code> 및 <code>EchoServerHandler</code> 코드 작성 후 기동</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EchoServer</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> port;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">EchoServer</span><span class="params">(<span class="keyword">int</span> port)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.port = port;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (args.length &lt; <span class="number">1</span>) &#123;</span><br><span class="line">			System.err.println(<span class="string">&quot;Usage: &quot;</span> + EchoServer.class.getSimpleName() + <span class="string">&quot;&lt;port&gt;&quot;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">int</span> port = Integer.parseInt(args[<span class="number">0</span>]);</span><br><span class="line">		<span class="keyword">new</span> EchoServer(port).start();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">		<span class="keyword">final</span> EchoServerHandler echoServerHandler = <span class="keyword">new</span> EchoServerHandler();</span><br><span class="line">		EventLoopGroup group = <span class="keyword">new</span> NioEventLoopGroup();</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			ServerBootstrap b = <span class="keyword">new</span> ServerBootstrap();</span><br><span class="line">			b.group(group)</span><br><span class="line">				.channel(NioServerSocketChannel.class)</span><br><span class="line">				.localAddress(<span class="keyword">new</span> InetSocketAddress(port))</span><br><span class="line">				.childHandler(<span class="keyword">new</span> ChannelInitializer&lt;SocketChannel&gt;() &#123;</span><br><span class="line">					<span class="meta">@Override</span></span><br><span class="line">					<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initChannel</span><span class="params">(SocketChannel ch)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">						System.out.println(<span class="string">&quot;initChannel&quot;</span>);</span><br><span class="line">						ch.pipeline().addLast(echoServerHandler);</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;);</span><br><span class="line">			ChannelFuture future = b.bind().sync();</span><br><span class="line">			future.channel().closeFuture().sync();</span><br><span class="line">		&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">			group.shutdownGracefully().sync();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>부트스트랩 하는 코드를 포함하고 있으며, 서버 연결 요청을 수신하는 포트를 서버와 바인딩하는 코드가 있어야 한다.</li>
+<li>NioEventLoopGroup을 통하여 새로운 연결 수락 및 데이터 읽기/쓰기와 같은 이벤트를 처리</li>
+<li>서버가 바인딩하는 InetSocketAddress를 지정</li>
+<li>새로운 연결을 수락하고 Channel을 생성 후 ChannelInitializer를 통하여 EchoServerHandler 인스턴스를 Channel의 ChannelPipeline으로 추가한다.</li>
+<li>ServerBootstrap.bind() 호출하여 서버를 바인딩</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Sharable</span> <span class="comment">// 여러 Channel에서 공유할 수 있음을 나타나는 마커 인터페이스 </span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EchoServerHandler</span> <span class="keyword">extends</span> <span class="title">ChannelInboundHandlerAdapter</span> </span>&#123;</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">channelRead</span><span class="params">(ChannelHandlerContext ctx, Object msg)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">	<span class="keyword">final</span> ByteBuf in = (ByteBuf) msg;</span><br><span class="line">	System.out.println(</span><br><span class="line">		<span class="string">&quot;Server received: &quot;</span> + in.toString(CharsetUtil.UTF_8)</span><br><span class="line">	);</span><br><span class="line">	ctx.write(in);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">channelReadComplete</span><span class="params">(ChannelHandlerContext ctx)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">	ctx.writeAndFlush(Unpooled.EMPTY_BUFFER)</span><br><span class="line">		.addListener(ChannelFutureListener.CLOSE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">exceptionCaught</span><span class="params">(ChannelHandlerContext ctx, Throwable cause)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">	cause.printStackTrace();</span><br><span class="line">	ctx.close();</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>telnet을 통하여 Echo 메세지가 다시 telnet 클라이언트로 다시 전달이 되는지 확인하면 서버 코드 작성은 완료<br><img src="https://i.imgur.com/jvDaSSu.png" alt="텔넷테스트"></li>
+<li>서버에 들어오는 이벤트에 반응해야 하기 때문에 <code>ChannelInboundHandler</code> 구현체인 <code>ChannelInboundHandlerAdapter</code> 하위 클래스를 만들었고, 여기에 몇개 메소드를 오버라이드하여 메세지를 처리하도록 했다.<ul>
+<li><code>channelRead</code>: 메세지가 들어올때마다 호출</li>
+<li><code>channelReadComplete</code>: channelRead()의 마지막 호출에서 현재 일괄 처리의 마지막 메세지를 처리했음을 핸들러에 통보</li>
+<li><code>exceptionCaught</code>: 읽기 처리 중 예외가 발생하면 콜백됨, 예외 처리를 하지 않을 경우 ChannelPipeline의 마지막까지 이동 후 로깅이 되며, 가급적이면 하나 이상의 exceptionCaught를 구현하는 것이 바람직하다고 한다.</li>
+</ul>
+</li>
+<li>ChannelHandler는 네 가지 이벤트 유형을 제공하며, 어플리케이션은 ChannelHandler을 구현하거나 확장하여 이벤트를 후크하고 어플리케이션 로직을 제공해야 한다. ChannelHandler는 비즈니스 관심사에서 네트워크 관심사를 분리하는 것을 도와준다.</li>
+</ul>
+<h4 id="EchoClient-코드-작성"><a href="#EchoClient-코드-작성" class="headerlink" title="EchoClient 코드 작성"></a>EchoClient 코드 작성</h4><ul>
+<li>어플리케이션에서 필요한 <code>EchoClient</code>, <code>EchoClientHandler</code> 핸들러 코드는 아래와 같다.</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Sharable</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EchoClientHandler</span> <span class="keyword">extends</span> <span class="title">SimpleChannelInboundHandler</span>&lt;<span class="title">ByteBuf</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">channelActive</span><span class="params">(ChannelHandlerContext ctx)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        ctx.writeAndFlush(</span><br><span class="line">		Unpooled.copiedBuffer(<span class="string">&quot;Netty rocks!&quot;</span>, CharsetUtil.UTF_8)</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">channelRead0</span><span class="params">(ChannelHandlerContext ctx, ByteBuf msg)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(</span><br><span class="line">                <span class="string">&quot;Client received: &quot;</span> + msg.toString(CharsetUtil.UTF_8)</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">exceptionCaught</span><span class="params">(ChannelHandlerContext ctx, Throwable cause)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        cause.printStackTrace();</span><br><span class="line">        ctx.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/VrnfrIE.png" alt="ChannelHandler_Hierachy"></p>
+<ul>
+<li>서버와 마찬가지로 EchoClientHandler는 <code>ChannelInboundHandler</code> 인터페이스의 구현체인 <code>SimpleChannelInboundHandler</code>의 메소드를 오버라이드하여 필요한 작업을 처리한다.<ul>
+<li><code>channelActive()</code>: 서버 연결 후 콜백</li>
+<li><code>channelRead0()</code>: 서버에서 메세지 수신 후 콜백</li>
+<li><code>exceptionCaught()</code>: 처리 중 예외 시 콜백</li>
+</ul>
+</li>
+<li><code>channelRead0()</code>에서 주의할 점은 전체 바이트 데이터 수신를 한 번에 수신한다는 보장이 없다. 경우에 따라 <code>channelRead0()</code> 메소드가 여러번 호출될 수 있다. 대신, TCP는 스트림 기반 프로토콜이므로 서버에서 보낸 순서대로 바이트 수신을 보장한다.<blockquote>
+<p>예시) AB|CDE|FG, ABC|DE|FG, AB|CD|EFG 와 같은 형태로 바이트를 수신할 수도 있다는 이야기이다.</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EchoClient</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String host;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> port;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">EchoClient</span><span class="params">(String host, <span class="keyword">int</span> port)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.port = port;</span><br><span class="line">        <span class="keyword">this</span>.host = host;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        EventLoopGroup group = <span class="keyword">new</span> NioEventLoopGroup();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Bootstrap b = <span class="keyword">new</span> Bootstrap();</span><br><span class="line">            b.group(group)</span><br><span class="line">                    .channel(NioSocketChannel.class)</span><br><span class="line">                    .remoteAddress(<span class="keyword">new</span> InetSocketAddress(host, port))</span><br><span class="line">                    .handler(<span class="keyword">new</span> ChannelInitializer&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                        <span class="meta">@Override</span></span><br><span class="line">                        <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initChannel</span><span class="params">(SocketChannel ch)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                            ch.pipeline()</span><br><span class="line">				    	.addLast(<span class="keyword">new</span> EchoClientHandler());</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line">            ChannelFuture f = b.connect().sync();</span><br><span class="line">            f.channel().closeFuture().sync();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            group.shutdownGracefully().sync();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (args.length &lt; <span class="number">1</span>) &#123;</span><br><span class="line">            System.err.println(</span><br><span class="line">                    <span class="string">&quot;Usage: &quot;</span> + EchoClient.class.getSimpleName() + <span class="string">&quot;&lt;host&gt; &lt;port&gt;&quot;</span></span><br><span class="line">            );</span><br><span class="line">        &#125;</span><br><span class="line">        String host = args[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">int</span> port = Integer.parseInt(args[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">new</span> EchoClient(host, port).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3장-네티-컴포넌트와-설계"><a href="#3장-네티-컴포넌트와-설계" class="headerlink" title="3장. 네티 컴포넌트와 설계"></a>3장. 네티 컴포넌트와 설계</h2><h3 id="Channel-EventLoop-ChannelFuture"><a href="#Channel-EventLoop-ChannelFuture" class="headerlink" title="Channel, EventLoop, ChannelFuture"></a>Channel, EventLoop, ChannelFuture</h3><ul>
+<li>Channel: Socket</li>
+<li>EventLoop: 제어 흐름, 멀티스레딩, 동시성 제어</li>
+<li>ChannelFuture: 비동기 결과 알림</li>
+</ul>
+<h4 id="Channel-인터페이스"><a href="#Channel-인터페이스" class="headerlink" title="Channel 인터페이스"></a>Channel 인터페이스</h4><p><img src="https://i.imgur.com/Ovv6kg2.png" alt="Channel_Hierachy"></p>
+<blockquote>
+<p>실제 구현 클래스와 인터페이스 종류는 더 다양하다.</p>
+</blockquote>
+<ul>
+<li><code>Channel</code> 인터페이스는 Socket으로 직접 작업할 때의 복잡성을 크게 완화하는 API를 제공</li>
+</ul>
+<h4 id="EventLoop-인터페이스"><a href="#EventLoop-인터페이스" class="headerlink" title="EventLoop 인터페이스"></a>EventLoop 인터페이스</h4><p><img src="https://i.imgur.com/rF7huZs.png" alt="EventLoop"></p>
+<ul>
+<li>연결 수명주기 중 발생하는 이벤트를 처리하는 핵심 추상화 인터페이스</li>
+</ul>
+<p><img src="https://drek4537l1klr.cloudfront.net/maurer/Figures/03fig01.jpg" alt="EventLoop"></p>
+<blockquote>
+<p>출처: Netty-In-Action</p>
+</blockquote>
+<ul>
+<li><code>Channel</code> - <code>EventLoop</code> - <code>Thread</code> - <code>EventLoopGroup</code> 사이에서의 상호작용은 아래와 같다<ul>
+<li>한 <code>EventLoopGroup</code>은 하나 이상의 EventLoop를 포함</li>
+<li>한 <code>EventLoop</code>는 수명주기 동안 하나의 스레드에 바인딩</li>
+<li>한 <code>EventLoop</code>에서 처리되는 모든 입출력은 전용 스레드에서 처리</li>
+<li>한 <code>Channel</code>은 수명주기 동안 EventLoop에 등록</li>
+<li>한 <code>EventLoop</code>는 하나 이상의 Channel로 할당 가능</li>
+</ul>
+</li>
+</ul>
+<h4 id="ChannelHandler와-ChannelPipeline"><a href="#ChannelHandler와-ChannelPipeline" class="headerlink" title="ChannelHandler와 ChannelPipeline"></a>ChannelHandler와 ChannelPipeline</h4><p><img src="https://drek4537l1klr.cloudfront.net/maurer/Figures/03fig02.jpg" alt="ChannelHandler"></p>
+<ul>
+<li><code>ChannelHandler</code> 인터페이스<br>네티의 핵심 컴포넌트로 인바운드와 아웃바운드 데이터의 처리에 적용되는 모든 어플리케이션 논리를 처리하는 컨테이너 역할을 수행. 네트워크 이벤트에 의해 트리거되며 데이터를 변환하거나 예외처리하는 등의 모든 종류의 작업에 활용 가능하다.</li>
+</ul>
+<p><img src="https://drek4537l1klr.cloudfront.net/maurer/Figures/03fig03_alt.jpg" alt="ChannelPipeline"></p>
+<ul>
+<li><code>ChannelPipeline</code> 인터페이스<ul>
+<li><code>ChannelPipeline</code>은 <code>ChannelHandler</code> 체인을 위한 컨테이너를 제공.</li>
+<li>체인에서 인바운드/아웃바운드 이벤트를 전파하는 API를 정의한다.</li>
+<li><code>ChannelHandler</code>는 아래와 같은 과정으로 <code>ChannelPipeline</code>에 설치<ul>
+<li><code>ChannelInitializer</code> 구현은 ServerBootstrap에 등록</li>
+<li><code>ChannelInitializer.initChannel()</code>을 호출하면 ChannelInitializer가 ChannelHandler의 커스텀 집합을 파이프라인에 설치</li>
+<li><code>ChannelInitializer</code>는 <code>ChannelPipeline</code>에서 자신을 제거</li>
+</ul>
+</li>
+<li>파이프라인을 통해 이벤트를 전달하는 역할은 <code>ChannelHandler</code>가 담당하며, 핸들러 객체는 이벤트를 수신하고 로직을 실행하며 체인상의 다음 핸들러로 데이터를 전달한다.</li>
+<li>위 이미지에서 볼수 있듯이 인바운드/아웃바운드 핸들러는 같은 파이프라인에 설치가 가능하며 메세지/이벤트를 읽을 떄는 파이프라인 앞쪽에서 시작하며 체인상의 다음 ChannelInboundHandler로 데이터를 전달한다. 최종적으로 데이터가 파이프라인 뒤쪽에 이르면 모든 처리가 종료된다.</li>
+<li>아웃바운드도 개념은 동일하며, 체인상에서 뒤쪽에서 시작하여 앞쪽에 이를 때까지 이동한다. Socket으로 나오는 부분에 도달하면 쓰기 작업이 트리거된다.</li>
+<li>인바운드/아웃바운드 모두 ChannelHandler를 확장하지만, ChannelInboundHandler와 ChannelOutboundHandler의 구현을 구분하여 데이터 전달이 동일한 방향으로 수행되도록 보장한다.</li>
+<li>ChannelHandler를 하나 추가할 때 ChannelHandler와 ChannelPipeline의 바인딩을 나타내는 ChannelHandlerContext 하나가 할당된다. </li>
+<li>네티에서는 메세지를 보내는 데 Channel에 직접할 기록하는 방법과 ChannelHandler와 연결된 ChannelHandlerContext 객체에 기록하는 두 가지 방법이 존재한다. 전자는 ChannelPipeline 뒤쪽에서 시작되며, 후자의 방법은 메세지가 ChannelPipeline의 다음 핸들러에서 시작된다.</li>
+</ul>
+</li>
+</ul>
+<h4 id="ChannelHandler에-대한-고찰"><a href="#ChannelHandler에-대한-고찰" class="headerlink" title="ChannelHandler에 대한 고찰"></a>ChannelHandler에 대한 고찰</h4><ul>
+<li>네티는 비즈니스 로직을 쉽게 개발할 수 있도록 어댑터 클래스의 형태로 여러 기본 핸들러를 제공</li>
+<li>파이프라인의 각 핸들러는 체인의 다음 핸들러로 전달해야 하는데, 어댑터 클래스는 이 작업을 자동으로 해주고 특수한 동작이 필요한 메서드와 이벤트만 재정의할 수 있다.</li>
+<li>가장 자주 사용할 어댑터는 아래와 같다<ul>
+<li><code>ChannelHandlerAdapter</code></li>
+<li><code>ChannelInboundHandlerAdapter</code></li>
+<li><code>ChannelOutboundHandlerAdapter</code></li>
+<li><code>ChannelDuplexHandlerAdapter</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="인코더-디코더"><a href="#인코더-디코더" class="headerlink" title="인코더/디코더"></a>인코더/디코더</h4><ul>
+<li>메세지를 전송/수신할 때는 데이터를 변환해야 한다. 인바운드 메세지를 바이트에서 다른 포맷(보통 객체)로 변환하는 <code>디코딩</code> 과정을 거친다. 아웃바운드 메세지를 반대로 현재 포맷에서 바이트로 <code>인코딩</code> 되는 과정을 거친다. </li>
+<li>두 가지 변환 과정이 필요한 이유는 네트워크 데이터는 연속된 바이트여야하기 때문이다.</li>
+<li>네티가 제공하는 인코더/디코더 어댑터 클래스는 ChannelInboundHandler와 ChannelOutboundHandler를 구현한다.<ul>
+<li>인바운드 데이터의 경우 인바운드 Channel에서 읽는 각 메세지에 대해 호출되는 channelRead 메세지/이벤트를 재정의한다. 이 메서드는 제공된 디코더의 decode() 메서드를 호출한 후 디코딩된 바이트를 파이프라인 다음 ChannelInboundHandler에 전달한다. </li>
+<li>아웃바운드 메세지를 위한 패턴은 반대이며 인코더가 메세지를 바이트로 변환한 후 다음 ChannelOutboundHandler로 전달한다.</li>
+</ul>
+</li>
+</ul>
+<h4 id="SimpleChannelInboundHandler-추상-클래스"><a href="#SimpleChannelInboundHandler-추상-클래스" class="headerlink" title="SimpleChannelInboundHandler 추상 클래스"></a>SimpleChannelInboundHandler 추상 클래스</h4><ul>
+<li>어플리케이션에서 들어오는 디코딩된 메세지를 수신하고 데이터에 비즈니스 논리를 적용하는 핸들러를 많이 사용하게 되는데 이러한 핸들러를 만들때 <code>SimpleChannelInboundHandler&lt;T&gt;</code>를 확장하면 되며, T는 처리하는 메세지의 제네릭 타입이다. 하나 이상의 메소드를 오버라이드하고 모든 핸들러 매서드에 인자로 전달되는 ChannelHandlerContext에 대한 참조를 얻는다.</li>
+<li>이 메소드에서 가장 중요한 메소드는 <code>channelRead0(ChannelHandlerContext T)</code>인데, 원하는대로 구현을 가능하지만 현재 입출력 스레드를 블로킹하지 않아야 한다는 요건이 있다.</li>
+</ul>
+<h3 id="부트스트랩"><a href="#부트스트랩" class="headerlink" title="부트스트랩"></a>부트스트랩</h3><ul>
+<li>네티의 부트스트랩 클래스는 프로세스를 지정 포트에 바인딩(서버 부트스트랩)하거나 프로세스를 지정된 호스트의 지정된 포트에서 실행 중인 다른 호스트로 연결(클라이언트 부트스트랩)하는 등의 일을 하는 네트워크 레이어를 구성하는 컨테이너를 제공한다.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>범주</th>
+<th align="left">Bootstrap</th>
+<th align="center">ServerBootstrap</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>네트워크 기능</td>
+<td align="left">원격 호스트/포트와 연결</td>
+<td align="center">로컬 포트로 바인딩</td>
+</tr>
+<tr>
+<td>EventLoopGroup</td>
+<td align="left">1</td>
+<td align="center">2</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Bootstrap과 ServerBootstrap은 각기 EventLoopGroup의 수가 다른걸 볼 수 있다. </li>
+</ul>
+<p><img src="https://drek4537l1klr.cloudfront.net/maurer/Figures/03fig04_alt.jpg" alt="ServerBootstrap_EventLoopGroup"></p>
+<ul>
+<li>서버의 경우, 첫 번째 집합은 로컬 포트와 바인됭 서버 자체의 수신 소켓을 나타내는 ServerChannel 하나를 포함하고 두 번째 집합은 서버가 수락한 연결마다 하나씩 들어오는 클라이언트 연결을 처리하기 위해 생성된 모든 Channel을 포함한다.</li>
+<li>ServerChannel과 연결된 EventLoopGroup은 들어오는 연결 요청에 대해 Channel을 생성하는 역할을 EventLoop 하나에 할당한다. 연결이 수락되면 두 번째 EventLoopGroup이 해당 Channel에 EventLoop를 할당한다.</li>
+</ul>
+<h2 id="4장-전송"><a href="#4장-전송" class="headerlink" title="4장 전송"></a>4장 전송</h2><ul>
+<li>네티는 모든 전송 구현에 공통 API를 기반으로 사용하기 때문에 JDK를 직접 이용할 떄보다 변환이 훨씬 간단하다.<ul>
+<li>코드가 세부 구현 사항으로 오염될 우려가 적고, 광범위한 범위를 수정할 필요가 없어진다.</li>
+</ul>
+</li>
+</ul>
+</div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2021/07/27/Kotlin/Kotlin_In_Action/">Kotlin-In-Action Generics</a><a class="next" href="/2021/06/20/CS/%ED%95%9C%EA%B6%8C%EC%9C%BC%EB%A1%9C%EC%9D%BD%EB%8A%94%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0%EC%99%80%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/">한권으로읽는컴퓨터구조와프로그래밍</a></div><script src="https://utteranc.es/client.js" repo="thefeeling/thefeeling.github.io" issue-term="title" theme="github-light" crossorigin="anonymous" async> </script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://thefeeling.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 카테고리</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ARCHITECTURE/">ARCHITECTURE</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/AWS/">AWS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS/">CS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DATABASE/">DATABASE</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DDD/">DDD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DIARY/">DIARY</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kotlin/">Kotlin</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MESSAGING/">MESSAGING</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Persistence/">Persistence</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 태그</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 과거</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/08/13/DIARY/20210813/">20210813</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/09/ARCHITECTURE/DATA_INTENSIVE_APPLICATION/">데이터 중심 어플리케이션 설계 - 7장 트랜잭션</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/08/DIARY/20210808/">20210808</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/05/DIARY/20210805/">20210805</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/01/DIARY/20210801/">20210801</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/30/DIARY/20210730/">20210730</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/28/DIARY/20210728/">20210728</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/DIARY/20210727/">20210727</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/Spring/MVC_RequestParam/">MVC와 WebFlux에서의 @ReqeustParam</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/Kotlin/Kotlin_In_Action/">Kotlin-In-Action Generics</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/." rel="nofollow">Choi's Dev.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" id="maid-script" mermaidoptioins="{&quot;startOnload&quot;:true}" src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js?v=1.0.0"></script><script>if (window.mermaid) {
+  var options = JSON.parse(document.getElementById('maid-script').getAttribute('mermaidoptioins'));
+  mermaid.initialize(options);
+}
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="Copy Successed!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html><html lang="ko"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content=""><title>20190609 | Choi's Dev</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create','UA-203671947-1','auto');ga('send','pageview');
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 5.4.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">20190609</h1><a id="logo" href="/.">Choi's Dev</a><p class="description">Software Engineer, Backend-Developer</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 홈</i></a><a href="/archives/"><i class="fa fa-archive"> 아카이브</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">20190609</h1><div class="post-meta">2019-06-09<span> | </span><span class="category"><a href="/categories/DIARY/">DIARY</a></span></div><div class="post-content"><h1 id="20190609"><a href="#20190609" class="headerlink" title="20190609"></a>20190609</h1><h2 id="DDD-Start-3-4장-학습"><a href="#DDD-Start-3-4장-학습" class="headerlink" title="DDD Start 3,4장 학습"></a>DDD Start 3,4장 학습</h2><p>1~2장을 통하여 DDD와 관련된 주요 개념과 키워드들을 살펴보았고, 3장부터는 도메인의 영역을 큰 그림을 통하여 세부 그림을 이해하는 법부터 시작하여 애그리거트를 구성하는 방법과 주의해야 할 부분이 대하여 조금 더 깊게 볼 수 있어서 좋았다. 4장에서는 실제 JPA를 이용하여 엔티티 매핑과 벨류 매핑을 직접 실습 해볼 수 있었는데, 자바로 되어 있는 매핑 코드를 코틀린 베이스로 옮겨서 작성해야 하니 생각보다 걸리는 지점이 있어서 조금 시간을 소모 할수 밖에 없었다. JPA를 공부하고 바로 이 책을 봤었더라면 좀 더 업무 코드에서도 의미 있는 엔티티 구성과 로직을 만들어 낼 수 있었겠다는 아쉬움도 들긴 하지만, 지금이라도 모자란 부분이 무엇인지 확인해볼 수 있는 좋은 기회인거 같아 나름 수확이 있다고 할 수 있다.</p>
+<ul>
+<li>3장<ul>
+<li>트랜잭션 범위 지정: 애그리거트 단위로 지정</li>
+<li>레파지토리/애그리거트<ul>
+<li>레파지토리는 <code>애그리거트</code> 단위로 작성</li>
+<li>레파지토리의 인터페이스는 도메인 레이어에 그리고 이를 구현하는 클래스는 인프라스트럭처 레이어로 배치</li>
+</ul>
+</li>
+<li>애그리거트 간 연관 관계 참조 전략<ul>
+<li>필드 매핑의 경우, 경계가 애매해질 수 있음</li>
+<li>ID값을 매핑하는 전략을 사용할 경우 조금 더 명료해짐</li>
+</ul>
+</li>
+<li>애매한 경계에서의 요구사항일 경우, 별도의 조회 도메인을 작성하는 것도 좋다.</li>
+</ul>
+</li>
+<li>4장<ul>
+<li>루트 엔티티(애그리거트 루트) 매핑</li>
+<li>레파지토리의 주요 역할</li>
+<li>다양한 매핑 방법<ul>
+<li>ID값 매핑(@EmbeddedId)</li>
+<li>컬렉션 데이터 매핑(컬럼, 테이블)</li>
+<li>@Convert, AttributeConvert를 활용한 데이터 컨버터 생성 및 적용</li>
+</ul>
+</li>
+<li>벨류 객체에 대한 매핑 전략<ul>
+<li>같은 라이프사이클 내에 존재하는 연관 객체라면 벨류 객체 매핑을 통하여 충분히 해결이 가능하다.</li>
+<li><code>@Embeddable</code>, <code>@Embedded</code>을 사용한 불변 객체 활용 및 <code>@AttributeOverrides</code>, <code>@AttributeOverride</code>를 활용한 컬럼 데이터 재지정 및 매핑</li>
+<li>도메인 상황에 따른 엔티티 객체로 매핑<ul>
+<li>연관 객체라고 하여 모든 것을 엔티티로 매핑 할 이유는 없다. 객체의 라이프사이클이 엔티티로 지정 해야 할 라이프사이클인지 그리고 확실하게 애그리거트내에 존재해야 하는지 도메인 상황에 맞는 정확한 판단을 해야 한다. </li>
+</ul>
+</li>
+<li><code>@ElementCollection</code>, <code>@CollectionTable</code>을 별도 테이블 벨류 매핑</li>
+</ul>
+</li>
+<li>로딩 전략(Eager/Lazy)<ul>
+<li>N+1</li>
+<li>Eager와 Lazy를 사용해야 할 시점에 대한 고민</li>
+<li>Lazy 사용 시, 트랜잭션 범위 내에서 사용</li>
+</ul>
+</li>
+<li>영속성 전파/식별자 생성 전략<ul>
+<li>Cascade, orphanRemoval</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2019/06/22/DIARY/20190622/">20190622</a><a class="next" href="/2019/06/08/DDD/DDD_START_2/">DDD Start - 2장</a></div><script src="https://utteranc.es/client.js" repo="thefeeling/thefeeling.github.io" issue-term="title" theme="github-light" crossorigin="anonymous" async> </script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://thefeeling.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 카테고리</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ARCHITECTURE/">ARCHITECTURE</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/AWS/">AWS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS/">CS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DATABASE/">DATABASE</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DDD/">DDD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DIARY/">DIARY</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kotlin/">Kotlin</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MESSAGING/">MESSAGING</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Persistence/">Persistence</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 태그</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 과거</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/08/13/DIARY/20210813/">20210813</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/09/ARCHITECTURE/DATA_INTENSIVE_APPLICATION/">데이터 중심 어플리케이션 설계 - 7장 트랜잭션</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/08/DIARY/20210808/">20210808</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/05/DIARY/20210805/">20210805</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/08/01/DIARY/20210801/">20210801</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/30/DIARY/20210730/">20210730</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/28/DIARY/20210728/">20210728</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/DIARY/20210727/">20210727</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/Spring/MVC_RequestParam/">MVC와 WebFlux에서의 @ReqeustParam</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/07/27/Kotlin/Kotlin_In_Action/">Kotlin-In-Action Generics</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/." rel="nofollow">Choi's Dev.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" id="maid-script" mermaidoptioins="{&quot;startOnload&quot;:true}" src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js?v=1.0.0"></script><script>if (window.mermaid) {
+  var options = JSON.parse(document.getElementById('maid-script').getAttribute('mermaidoptioins'));
+  mermaid.initialize(options);
+}
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="Copy Successed!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>
